@@ -1,0 +1,56 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    restart: unless-stopped
+    # GPU support - uncomment if your VPS has NVIDIA GPU
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+
+  whisper:
+    build:
+      context: .
+      dockerfile: whisper/Dockerfile
+    container_name: whisper
+    environment:
+      - WHISPER_MODEL_SIZE=base
+      - WHISPER_DEVICE=cpu
+      - WHISPER_COMPUTE_TYPE=int8
+      - PORT=8000
+    ports:
+      - "8000:8000"
+    volumes:
+      # Persist downloaded Whisper models
+      - whisper-models:/root/.cache/huggingface
+      # Temporary upload directory
+      - whisper-temp:/app/temp
+    restart: unless-stopped
+    depends_on:
+      - ollama
+    # Dokploy Traefik labels for automatic HTTPS and routing
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.whisper.rule=Host(`your-domain.com`)"
+      - "traefik.http.routers.whisper.entrypoints=websecure"
+      - "traefik.http.routers.whisper.tls.certresolver=letsencrypt"
+      - "traefik.http.services.whisper.loadbalancer.server.port=8000"
+      # Increase timeout for long-running transcriptions
+      - "traefik.http.middlewares.whisper-timeout.timeout.request=30m"
+      - "traefik.http.routers.whisper.middlewares=whisper-timeout"
+
+volumes:
+  ollama-data:
+    driver: local
+  whisper-models:
+    driver: local
+  whisper-temp:
+    driver: local

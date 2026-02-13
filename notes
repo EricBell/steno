@@ -1,0 +1,39 @@
+ No API Keys Required! 🎉                                                                                                                                                                                                                               
+                                                                                                                                                                                                                                                         
+  This application runs completely locally with zero API costs. Here's why:                                                                                                                                                                              
+                                                                                                                                                     
+  1. Whisper (Speech-to-Text):                                                                                                                                                                                                                           
+                                                                                                                                                                                                                                                         
+  - ✅ Uses faster-whisper - an open-source local implementation
+  - ✅ Downloads the model from HuggingFace (public, no key needed)                                                                                                                                                                                      
+  - ✅ Runs entirely on your machine (CPU/GPU)                                                                                                                                                                                                           
+  - ❌ NOT using OpenAI's paid Whisper API                                                                                                                                                                                                               
+                                                                                                                                                                                                                                                         
+  2. Ollama (AI Summarization):                                                                                                                                                                                                                          
+
+  - ✅ Runs local LLM models on your machine
+  - ✅ No internet connection needed after model download
+  - ✅ Completely free and private
+
+  3. No External API Calls:
+
+  # The only thing that happens:
+  1. Upload video to YOUR server (localhost:8000)
+  2. Process on YOUR machine
+  3. Return transcript to YOUR browser
+
+  # No data leaves your computer!
+
+  What Gets Downloaded (One-Time):
+
+  - Whisper model (~150MB for base model) - downloaded automatically from HuggingFace
+  - Ollama model (~4.7GB for llama3.1:8b) - only if you start Ollama service
+
+  Privacy & Cost Benefits:
+
+  ✅ Free - No API costs ever
+  ✅ Private - Your videos never leave your machine
+  ✅ Offline - Works without internet (after initial model download)
+  ✅ No Rate Limits - Process unlimited videos
+
+  This is one of the major advantages of using local models instead of cloud APIs! 🔒
