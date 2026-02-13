@@ -3,7 +3,7 @@ name = "whisper-test"
 version = "0.1.0"
 description = "Web-based video transcription using OpenAI Whisper"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
     "fastapi>=0.109.0",
     "uvicorn[standard]>=0.27.0",
