@@ -1,5 +1,5 @@
 [project]
-name = "whisper-test"
+name = "steno"
 version = "0.1.0"
 description = "Web-based video transcription using OpenAI Whisper"
 readme = "README.md"

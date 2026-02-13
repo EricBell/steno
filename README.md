@@ -25,7 +25,7 @@ A web-based application for transcribing video and audio files using OpenAI's Wh
 1. Clone this repository:
    ```bash
    git clone <repository-url>
-   cd whisper-test
+   cd steno
    ```
 
 2. Start the services:
@@ -169,7 +169,7 @@ uv run uvicorn app:app --reload --host 0.0.0.0 --port 8000
 ### Project Structure
 
 ```
-whisper-test/
+steno/
 ├── whisper/                    # Main application directory
 │   ├── app.py                 # FastAPI application
 │   ├── transcription.py       # Whisper integration

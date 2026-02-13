@@ -17,7 +17,7 @@ This guide covers deploying the Video Transcription app to your Dokploy VPS.
 Dokploy deploys from Git repositories. Push your code to GitHub/GitLab/etc:
 
 ```bash
-cd /home/eric/workspace/original/whisper-test
+cd /home/eric/workspace/original/steno
 git add .
 git commit -m "Prepare for Dokploy deployment"
 git push origin main

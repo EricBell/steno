@@ -1,5 +1,5 @@
 def main():
-    print("Hello from whisper-test!")
+    print("Hello from steno!")
 
 
 if __name__ == "__main__":
