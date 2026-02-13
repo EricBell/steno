@@ -1,0 +1,39 @@
+services:
+  ollama:
+    build: .
+    container_name: ollama
+    environment:
+      - OLLAMA_MODEL=llama3.1:8b
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    networks:
+      - app-network
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  whisper:
+    build: ./whisper
+    container_name: whisper
+    environment:
+      - WHISPER_MODEL_SIZE=base
+      - WHISPER_DEVICE=cpu
+      - WHISPER_COMPUTE_TYPE=int8
+      - PORT=8000
+    ports:
+      - "8000:8000"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    name: ytsummarizer_app-network
+
+volumes:
+  ollama-data:
