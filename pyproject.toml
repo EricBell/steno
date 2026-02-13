@@ -1,7 +1,15 @@
 [project]
 name = "whisper-test"
 version = "0.1.0"
-description = "Add your description here"
+description = "Web-based video transcription using OpenAI Whisper"
 readme = "README.md"
-requires-python = ">=3.14"
-dependencies = []
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi>=0.109.0",
+    "uvicorn[standard]>=0.27.0",
+    "python-multipart>=0.0.6",
+    "faster-whisper>=0.10.0",
+    "pydantic>=2.5.3",
+    "aiofiles>=23.2.1",
+    "httpx>=0.26.0",
+]

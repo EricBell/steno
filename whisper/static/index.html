@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Transcription</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Video Transcription</h1>
+        <p class="subtitle">Upload a video file to generate a text transcript using AI</p>
+
+        <!-- Drag & Drop Zone -->
+        <div id="dropZone" class="drop-zone">
+            <div class="drop-zone-content">
+                <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
+                <p class="drop-zone-text">Drag and drop a video file here</p>
+                <p class="drop-zone-or">or</p>
+                <button id="selectFileBtn" class="select-file-btn">Select File</button>
+                <input type="file" id="fileInput" accept="video/*,audio/*" hidden>
+                <p class="drop-zone-hint">Supported formats: MP4, AVI, MKV, MOV, WebM, and more</p>
+            </div>
+        </div>
+
+        <!-- Options -->
+        <div id="options" class="options">
+            <label class="option-label">
+                <input type="checkbox" id="timestamps">
+                <span>Include Timestamps</span>
+            </label>
+            <label class="option-label">
+                <input type="checkbox" id="summarize">
+                <span>Generate AI Summary</span>
+            </label>
+        </div>
+
+        <!-- Progress -->
+        <div id="progress" class="progress hidden">
+            <div class="spinner"></div>
+            <p class="progress-text">Processing your video...</p>
+            <p class="progress-hint">This may take a few minutes depending on video length</p>
+        </div>
+
+        <!-- Results -->
+        <div id="results" class="results hidden">
+            <div class="results-header">
+                <h2>Transcript</h2>
+                <button id="copyBtn" class="copy-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                    Copy to Clipboard
+                </button>
+            </div>
+            <div id="transcript" class="transcript"></div>
+
+            <div id="summarySection" class="summary-section hidden">
+                <h3>AI Summary</h3>
+                <div id="summaryText" class="summary-text"></div>
+            </div>
+
+            <button id="newUploadBtn" class="new-upload-btn">Upload Another Video</button>
+        </div>
+
+        <!-- Error Message -->
+        <div id="errorMessage" class="error-message hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p id="errorText"></p>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

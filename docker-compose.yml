@@ -19,7 +19,9 @@ services:
               capabilities: [gpu]
 
   whisper:
-    build: ./whisper
+    build:
+      context: .
+      dockerfile: whisper/Dockerfile
     container_name: whisper
     environment:
       - WHISPER_MODEL_SIZE=base
