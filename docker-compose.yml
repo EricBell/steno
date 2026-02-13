@@ -34,7 +34,7 @@ services:
 
 networks:
   app-network:
-    name: ytsummarizer_app-network
+    name: steno_app-network
 
 volumes:
   ollama-data:
