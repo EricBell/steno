@@ -39,7 +39,7 @@ services:
     # Dokploy Traefik labels for automatic HTTPS and routing
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.whisper.rule=Host(`your-domain.com`)"
+      - "traefik.http.routers.whisper.rule=Host(`steno.fastrax.com`)"
       - "traefik.http.routers.whisper.entrypoints=websecure"
       - "traefik.http.routers.whisper.tls.certresolver=letsencrypt"
       - "traefik.http.services.whisper.loadbalancer.server.port=8000"
