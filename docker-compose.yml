@@ -1,22 +1,21 @@
 services:
   ollama:
-    build: .
+    image: ollama/ollama:latest
     container_name: ollama
-    environment:
-      - OLLAMA_MODEL=llama3.1:8b
     ports:
       - "11434:11434"
     volumes:
       - ollama-data:/root/.ollama
     networks:
       - app-network
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
+    # Uncomment below if you have an NVIDIA GPU
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
 
   whisper:
     build:
