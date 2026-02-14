@@ -1,9 +1,6 @@
 services:
   ollama:
     image: ollama/ollama:latest
-    container_name: ollama
-    ports:
-      - "11434:11434"
     volumes:
       - ollama-data:/root/.ollama
     restart: unless-stopped
@@ -20,14 +17,11 @@ services:
     build:
       context: .
       dockerfile: whisper/Dockerfile
-    container_name: whisper
     environment:
       - WHISPER_MODEL_SIZE=base
       - WHISPER_DEVICE=cpu
       - WHISPER_COMPUTE_TYPE=int8
       - PORT=8000
-    ports:
-      - "8000:8000"
     volumes:
       # Persist downloaded Whisper models
       - whisper-models:/root/.cache/huggingface
@@ -36,16 +30,6 @@ services:
     restart: unless-stopped
     depends_on:
       - ollama
-    # Dokploy Traefik labels for automatic HTTPS and routing
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.whisper.rule=Host(`steno.fastrax.com`)"
-      - "traefik.http.routers.whisper.entrypoints=websecure"
-      - "traefik.http.routers.whisper.tls.certresolver=letsencrypt"
-      - "traefik.http.services.whisper.loadbalancer.server.port=8000"
-      # Increase timeout for long-running transcriptions
-      - "traefik.http.middlewares.whisper-timeout.timeout.request=30m"
-      - "traefik.http.routers.whisper.middlewares=whisper-timeout"
 
 volumes:
   ollama-data:
