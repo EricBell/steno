@@ -1,3 +1,6 @@
+```
+Starting notes when the project was first created.
+```
  No API Keys Required! 🎉                                                                                                                                                                                                                               
                                                                                                                                                                                                                                                          
   This application runs completely locally with zero API costs. Here's why:                                                                                                                                                                              
@@ -37,3 +40,35 @@
   ✅ No Rate Limits - Process unlimited videos
 
   This is one of the major advantages of using local models instead of cloud APIs! 🔒
+
+  ```
+  Loading ollama first time is slow
+  ```
+   Ollama can be slow locally because:                                                                                                                                         
+                                                                                                                                                                                    
+  1. Large model size - llama3.1:8b is ~4.7GB to download                                                                                                                           
+  2. First-time pull - Has to download from Ollama's registry
+  3. CPU performance - LLMs are heavy on CPU without GPU                                                                                                                            
+                                                                                                                                                                                    
+  Quick fixes for local development:
+
+  Option 1: Skip Ollama entirely (fastest)
+  The app works fine without it - transcription doesn't need Ollama, only the optional AI summary does.
+
+  # Edit docker-compose.yml to comment out ollama service
+  docker-compose up whisper  # Only start whisper
+
+  Option 2: Use a tiny model (much faster)
+  Replace the model with a smaller one:
+
+  # After ollama starts, pull a tiny model instead
+  docker exec -it ollama ollama pull tinyllama  # Only ~600MB
+  # or
+  docker exec -it ollama ollama pull llama3.2:1b  # ~1.3GB
+
+  Then update your code to use tinyllama or llama3.2:1b instead of llama3.1:8b.
+
+  Option 3: Just wait it out once
+  The model downloads once and is cached in the ollama-data volume. Subsequent starts are fast.
+
+  My recommendation for local dev: Skip Ollama or use tinyllama. Save the big model for production on Dokploy.
