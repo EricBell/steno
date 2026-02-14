@@ -35,7 +35,7 @@ COPY whisper/static/ ./static/
 RUN mkdir -p /app/temp
 
 # Expose port
-EXPOSE 8000
+# EXPOSE 8000   # read from the env var now.
 
-# Run with uv
-CMD ["uv", "run", "uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
+# Run with uv (uses PORT env var from app.py)
+CMD ["uv", "run", "python", "app.py"]
