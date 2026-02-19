@@ -356,6 +356,13 @@ h1 {
     display: none !important;
 }
 
+.version {
+    text-align: center;
+    color: #ccc;
+    font-size: 0.75rem;
+    margin-top: 20px;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .container {
