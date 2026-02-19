@@ -208,9 +208,23 @@ docker-compose logs whisper
 - Check container logs for errors
 
 ### Ollama summarization not working
-- Check if Ollama service is running: `docker-compose ps`
-- Verify Ollama health: `curl http://localhost:11434/api/tags`
-- GPU support may be required for Ollama
+The Ollama model must be pulled manually before summarization will work. It is not downloaded automatically:
+
+```bash
+docker exec ollama ollama pull llama3.1:8b
+```
+
+This is a ~4.7GB download. The model is stored in the `ollama-data` volume and persists across restarts — you only need to do this once. For a smaller/faster model:
+
+```bash
+docker exec ollama ollama pull llama3.2:1b
+```
+
+Then update `OLLAMA_MODEL=llama3.2:1b` in `docker-compose.yml` and restart the whisper container.
+
+Other checks:
+- Confirm Ollama is running: `docker-compose ps`
+- Confirm the model is available: `docker exec ollama ollama list`
 
 ### Processing is very slow
 - Consider using a smaller model (e.g., `tiny` or `base`)
