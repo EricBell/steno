@@ -176,6 +176,12 @@ h1 {
     margin-bottom: 20px;
 }
 
+.transcription-time {
+    font-size: 0.85rem;
+    color: #999;
+    margin-bottom: 10px;
+}
+
 .results-header h2 {
     font-size: 1.8rem;
     color: #333;
@@ -358,7 +364,7 @@ h1 {
 
 .version {
     text-align: center;
-    color: #ccc;
+    color: #f36b6b;
     font-size: 0.75rem;
     margin-top: 20px;
 }

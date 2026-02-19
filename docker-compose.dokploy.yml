@@ -23,6 +23,7 @@ services:
       - WHISPER_COMPUTE_TYPE=int8
       - PORT=3000
       - MAX_FILE_SIZE_MB=500
+      - OLLAMA_TIMEOUT=600
     volumes:
       # Persist downloaded Whisper models
       - whisper-models:/root/.cache/huggingface

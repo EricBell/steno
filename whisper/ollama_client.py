@@ -1,3 +1,4 @@
+import os
 import httpx
 from typing import Optional
 import logging
@@ -18,7 +19,7 @@ class OllamaClient:
         """
         self.base_url = base_url
         self.model = model
-        self.timeout = 120.0  # 2 minutes timeout for LLM generation
+        self.timeout = float(os.getenv("OLLAMA_TIMEOUT", 600))  # default 10 minutes
 
     async def health_check(self) -> bool:
         """

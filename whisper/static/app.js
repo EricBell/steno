@@ -190,6 +190,8 @@ async function startTranscription(file) {
     formData.append('include_timestamps', timestampsCheckbox.checked);
     formData.append('summarize', summarizeCheckbox.checked);
 
+    const startTime = Date.now();
+
     try {
         const response = await fetch('/api/transcribe', {
             method: 'POST',
@@ -209,8 +211,9 @@ async function startTranscription(file) {
             throw new Error(errorMsg);
         }
 
+        const elapsed = Date.now() - startTime;
         const result = await response.json();
-        displayResults(result);
+        displayResults(result, elapsed);
     } catch (error) {
         console.error('Upload error:', error);
         showError(`Error: ${error.message}`);
@@ -220,8 +223,16 @@ async function startTranscription(file) {
 }
 
 // Display Results
-function displayResults(result) {
+function displayResults(result, elapsedMs) {
     hideProgress();
+
+    if (elapsedMs != null) {
+        const totalSecs = Math.round(elapsedMs / 1000);
+        const mins = Math.floor(totalSecs / 60);
+        const secs = totalSecs % 60;
+        const label = mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
+        document.getElementById('transcriptionTime').textContent = `Transcribed in ${label}`;
+    }
 
     transcriptDiv.textContent = result.text;
 
@@ -262,6 +273,7 @@ function resetUI() {
     fileInput.value = '';
     transcriptDiv.textContent = '';
     summaryText.textContent = '';
+    document.getElementById('transcriptionTime').textContent = '';
     pendingFile = null;
 }
 

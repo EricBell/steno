@@ -28,6 +28,7 @@ services:
       - WHISPER_COMPUTE_TYPE=int8
       - PORT=8000
       - MAX_FILE_SIZE_MB=1000
+      - OLLAMA_TIMEOUT=600
     ports:
       - "8000:8000"
     networks:

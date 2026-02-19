@@ -48,9 +48,10 @@ The app is a single FastAPI service (`whisper/app.py`) that serves both the REST
 - `MAX_FILE_SIZE_MB` — default: 500; exposed via `GET /api/models` so the frontend reads it dynamically
 - `PORT` — default: 8000
 
-**Versioning:** Version is hardcoded in two places that must be updated together:
+**Versioning:** Version must be updated in three places together:
 - `pyproject.toml` → `version = "..."`
 - `whisper/static/index.html` → `<p class="version">v...</p>`
+- `whisper/static/index.html` → `?v=` query string on both the `<link>` and `<script>` tags (cache-busting)
 
 Policy: increment **minor** for new features, **patch** for bug fixes (e.g. `0.1.0` → `0.2.0` for a feature, `0.1.1` for a fix).
 
