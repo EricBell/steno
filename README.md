@@ -112,6 +112,10 @@ The application can be configured via environment variables in `docker-compose.y
   - Default: `int8`
   - Lower precision is faster with minimal accuracy loss
 
+- `MAX_FILE_SIZE_MB`: Maximum upload file size in megabytes
+  - Default: `500`
+  - Example: set to `2048` to allow files up to 2GB
+
 ### Ollama Service Configuration
 
 - `OLLAMA_MODEL`: LLM model for summarization
@@ -134,8 +138,12 @@ GPU processing is significantly faster but requires NVIDIA GPU support.
 
 ## File Size Limits
 
-- Maximum file size: 500MB
-- This limit can be adjusted in the code if needed
+The default maximum file size is 500MB. To change it, set `MAX_FILE_SIZE_MB` in `docker-compose.yml`:
+
+```yaml
+environment:
+  - MAX_FILE_SIZE_MB=2048  # 2GB
+```
 
 ## Architecture
 
@@ -196,7 +204,7 @@ docker-compose logs whisper
 
 ### Transcription fails
 - Check file format is supported
-- Ensure file size is under 500MB
+- Ensure file size is within the configured `MAX_FILE_SIZE_MB` limit
 - Check container logs for errors
 
 ### Ollama summarization not working

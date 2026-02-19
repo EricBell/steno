@@ -27,6 +27,7 @@ services:
       - WHISPER_DEVICE=cpu
       - WHISPER_COMPUTE_TYPE=int8
       - PORT=8000
+      - MAX_FILE_SIZE_MB=500
     ports:
       - "8000:8000"
     networks:

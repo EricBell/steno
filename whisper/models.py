@@ -39,3 +39,4 @@ class ModelInfo(BaseModel):
     available_models: List[str] = Field(..., description="List of available Whisper models")
     device: str = Field(..., description="Computation device (cpu or cuda)")
     compute_type: str = Field(..., description="Compute type (int8, float16, etc.)")
+    max_file_size_mb: int = Field(..., description="Maximum upload file size in MB")

@@ -126,7 +126,8 @@ async def get_models():
         current_model=model_info["model"],
         available_models=available_models,
         device=model_info["device"],
-        compute_type=model_info["compute_type"]
+        compute_type=model_info["compute_type"],
+        max_file_size_mb=int(os.getenv("MAX_FILE_SIZE_MB", 500))
     )
 
 
@@ -147,8 +148,9 @@ async def transcribe_video(
     audio_file_path = None
 
     try:
-        # Validate file size (500MB limit)
-        max_size = 500 * 1024 * 1024  # 500MB
+        # Validate file size
+        max_file_size_mb = int(os.getenv("MAX_FILE_SIZE_MB", 500))
+        max_size = max_file_size_mb * 1024 * 1024
         file.file.seek(0, 2)  # Seek to end
         file_size = file.file.tell()
         file.file.seek(0)  # Reset to beginning
@@ -156,7 +158,7 @@ async def transcribe_video(
         if file_size > max_size:
             raise HTTPException(
                 status_code=413,
-                detail=f"File too large. Maximum size is 500MB. Your file: {file_size / (1024*1024):.1f}MB"
+                detail=f"File too large. Maximum size is {max_file_size_mb}MB. Your file: {file_size / (1024*1024):.1f}MB"
             )
 
         logger.info(f"Received file: {file.filename} ({file_size / (1024*1024):.2f}MB)")

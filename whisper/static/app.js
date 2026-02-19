@@ -1,3 +1,11 @@
+// Config (fetched from server)
+let maxFileSizeMb = 500; // fallback default
+
+fetch('/api/models')
+    .then(r => r.json())
+    .then(data => { if (data.max_file_size_mb) maxFileSizeMb = data.max_file_size_mb; })
+    .catch(() => {});
+
 // DOM Elements
 const dropZone = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
@@ -84,10 +92,10 @@ async function handleFileUpload(file) {
         return;
     }
 
-    // Check file size (max 500MB)
-    const maxSize = 500 * 1024 * 1024; // 500MB in bytes
+    // Check file size
+    const maxSize = maxFileSizeMb * 1024 * 1024;
     if (file.size > maxSize) {
-        showError('File is too large. Maximum size is 500MB. Your file: ' + formatFileSize(file.size));
+        showError(`File is too large. Maximum size is ${maxFileSizeMb}MB. Your file: ` + formatFileSize(file.size));
         return;
     }
 
