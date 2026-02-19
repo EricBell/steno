@@ -37,6 +37,29 @@
             </label>
         </div>
 
+        <!-- Estimate Panel -->
+        <div id="estimatePanel" class="estimate-panel hidden">
+            <div class="estimate-grid">
+                <div class="estimate-row">
+                    <span class="estimate-label">Duration</span>
+                    <span id="estimateDuration" class="estimate-value">—</span>
+                </div>
+                <div class="estimate-row">
+                    <span class="estimate-label">Est. processing time</span>
+                    <span id="estimateProcessing" class="estimate-value">—</span>
+                </div>
+                <div class="estimate-row">
+                    <span class="estimate-label">Est. transcript length</span>
+                    <span id="estimateWords" class="estimate-value">—</span>
+                </div>
+                <div class="estimate-row">
+                    <span class="estimate-label">Ollama context usage</span>
+                    <span id="estimateOllama" class="estimate-value">—</span>
+                </div>
+            </div>
+            <button id="transcribeBtn" class="transcribe-btn">Transcribe</button>
+        </div>
+
         <!-- Progress -->
         <div id="progress" class="progress hidden">
             <div class="spinner"></div>

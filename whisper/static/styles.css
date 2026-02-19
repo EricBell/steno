@@ -285,6 +285,73 @@ h1 {
     line-height: 1.5;
 }
 
+.estimate-panel {
+    background: #f8f9ff;
+    border: 2px solid #667eea;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+}
+
+.estimate-grid {
+    margin-bottom: 20px;
+}
+
+.estimate-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #e8edff;
+}
+
+.estimate-row:last-child {
+    border-bottom: none;
+}
+
+.estimate-label {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.estimate-value {
+    font-weight: 600;
+    color: #333;
+    font-size: 0.9rem;
+}
+
+.estimate-value.ok {
+    color: #27ae60;
+}
+
+.estimate-value.warn {
+    color: #e67e22;
+}
+
+.transcribe-btn {
+    display: block;
+    width: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 14px 32px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.transcribe-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.6);
+}
+
+.transcribe-btn:active {
+    transform: translateY(0);
+}
+
 .hidden {
     display: none !important;
 }
