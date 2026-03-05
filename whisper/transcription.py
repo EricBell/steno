@@ -74,7 +74,8 @@ class TranscriptionEngine:
             segments, info = self.model.transcribe(
                 audio_path,
                 language=language,
-                beam_size=5,
+                beam_size=1,
+                vad_filter=True,
                 word_timestamps=include_timestamps
             )
 
