@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Video Transcription</title>
-    <link rel="stylesheet" href="/static/styles.css?v=0.2.1">
+    <link rel="stylesheet" href="/static/styles.css?v=0.3.0">
 </head>
 <body>
     <div class="container">
@@ -64,7 +64,11 @@
         <div id="progress" class="progress hidden">
             <div class="spinner"></div>
             <p class="progress-text">Processing your video...</p>
-            <p class="progress-hint">This may take a few minutes depending on video length</p>
+            <div class="progress-bar-container">
+                <div id="progressBarFill" class="progress-bar-fill"></div>
+            </div>
+            <p id="progressStats" class="progress-stats">0% · 0s elapsed</p>
+            <button id="cancelBtn" class="cancel-btn hidden">Cancel</button>
         </div>
 
         <!-- Results -->
@@ -97,9 +101,9 @@
             <p id="errorText"></p>
         </div>
 
-        <p class="version">v0.2.1</p>
+        <p class="version">v0.3.0</p>
     </div>
 
-    <script src="/static/app.js?v=0.2.1"></script>
+    <script src="/static/app.js?v=0.3.0"></script>
 </body>
 </html>

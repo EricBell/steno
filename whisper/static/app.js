@@ -18,6 +18,9 @@ const TOKENS_PER_WORD = 1.3;
 
 // Pending file (set after estimate, consumed on transcribe)
 let pendingFile = null;
+let abortController = null;
+let progressInterval = null;
+let estimatedSeconds = 0;
 
 // DOM Elements
 const dropZone = document.getElementById('dropZone');
@@ -37,6 +40,9 @@ const copyBtn = document.getElementById('copyBtn');
 const newUploadBtn = document.getElementById('newUploadBtn');
 const timestampsCheckbox = document.getElementById('timestamps');
 const summarizeCheckbox = document.getElementById('summarize');
+const cancelBtn = document.getElementById('cancelBtn');
+const progressBarFill = document.getElementById('progressBarFill');
+const progressStats = document.getElementById('progressStats');
 
 // Drag and Drop Handlers
 dropZone.addEventListener('dragover', (e) => {
@@ -106,6 +112,10 @@ newUploadBtn.addEventListener('click', () => {
     resetUI();
 });
 
+cancelBtn.addEventListener('click', () => {
+    if (abortController) abortController.abort();
+});
+
 // --- File Selection: validate + show estimate ---
 
 async function handleFileSelect(file) {
@@ -148,6 +158,7 @@ async function showEstimatePanel(file) {
     const duration = await getFileDuration(file);
 
     if (duration == null) {
+        estimatedSeconds = 0;
         document.getElementById('estimateDuration').textContent = 'Unknown';
         document.getElementById('estimateProcessing').textContent = 'Unknown';
         document.getElementById('estimateWords').textContent = 'Unknown';
@@ -157,6 +168,7 @@ async function showEstimatePanel(file) {
     } else {
         const factor = MODEL_SPEED_FACTORS[currentModel] ?? MODEL_SPEED_FACTORS['base'];
         const processingSeconds = duration * factor;
+        estimatedSeconds = processingSeconds;
         const words = Math.round((duration / 60) * WORDS_PER_MINUTE);
         const tokens = Math.round(words * TOKENS_PER_WORD);
 
@@ -181,9 +193,36 @@ async function showEstimatePanel(file) {
 
 // --- Transcription ---
 
+function startProgressAnimation(estimatedSecs) {
+    const startTime = Date.now();
+    progressBarFill.style.width = '0%';
+    progressStats.textContent = '0% · 0s elapsed';
+    progressInterval = setInterval(() => {
+        const elapsedSec = (Date.now() - startTime) / 1000;
+        const pct = estimatedSecs > 0
+            ? Math.min(90, (elapsedSec / estimatedSecs) * 90)
+            : Math.min(90, elapsedSec * 2);
+        progressBarFill.style.width = pct.toFixed(1) + '%';
+        progressStats.textContent = `${Math.round(pct)}% · ${formatDuration(elapsedSec)} elapsed`;
+    }, 500);
+}
+
+function stopProgressAnimation(finalPct) {
+    if (progressInterval !== null) {
+        clearInterval(progressInterval);
+        progressInterval = null;
+    }
+    if (finalPct != null) {
+        progressBarFill.style.width = finalPct + '%';
+    }
+}
+
 async function startTranscription(file) {
+    hideError();
     estimatePanel.classList.add('hidden');
     showProgress();
+    startProgressAnimation(estimatedSeconds);
+    abortController = new AbortController();
 
     const formData = new FormData();
     formData.append('file', file);
@@ -191,34 +230,43 @@ async function startTranscription(file) {
     formData.append('summarize', summarizeCheckbox.checked);
 
     const startTime = Date.now();
-
     try {
         const response = await fetch('/api/transcribe', {
             method: 'POST',
-            body: formData
+            body: formData,
+            signal: abortController.signal
         });
 
         if (!response.ok) {
             let errorMsg = `Upload failed: ${response.statusText}`;
             try {
                 const errorData = await response.json();
-                if (errorData.detail) {
-                    errorMsg = errorData.detail;
-                }
-            } catch (e) {
-                // Use default error message
-            }
+                if (errorData.detail) errorMsg = errorData.detail;
+            } catch (e) {}
             throw new Error(errorMsg);
         }
 
         const elapsed = Date.now() - startTime;
         const result = await response.json();
+        stopProgressAnimation(100);
+        progressStats.textContent = '100% · complete';
+        await new Promise(resolve => setTimeout(resolve, 400));
         displayResults(result, elapsed);
     } catch (error) {
-        console.error('Upload error:', error);
-        showError(`Error: ${error.message}`);
-        hideProgress();
-        showDropZone();
+        if (error.name === 'AbortError') {
+            stopProgressAnimation(0);
+            hideProgress();
+            estimatePanel.classList.remove('hidden');
+            showInfo('Transcription cancelled.');
+        } else {
+            stopProgressAnimation(0);
+            console.error('Upload error:', error);
+            showError(`Error: ${error.message}`);
+            hideProgress();
+            showDropZone();
+        }
+    } finally {
+        abortController = null;
     }
 }
 
@@ -252,10 +300,13 @@ function showProgress() {
     optionsDiv.classList.add('hidden');
     progressDiv.classList.remove('hidden');
     resultsDiv.classList.add('hidden');
+    cancelBtn.classList.remove('hidden');
 }
 
 function hideProgress() {
     progressDiv.classList.add('hidden');
+    cancelBtn.classList.add('hidden');
+    stopProgressAnimation(null);
 }
 
 function showDropZone() {
@@ -274,17 +325,31 @@ function resetUI() {
     transcriptDiv.textContent = '';
     summaryText.textContent = '';
     document.getElementById('transcriptionTime').textContent = '';
+    stopProgressAnimation(null);
+    abortController = null;
+    estimatedSeconds = 0;
+    progressBarFill.style.width = '0%';
+    progressStats.textContent = '';
+    cancelBtn.classList.add('hidden');
     pendingFile = null;
 }
 
 // Error Handling
 function showError(message) {
+    errorMessage.classList.remove('info');
+    errorText.textContent = message;
+    errorMessage.classList.remove('hidden');
+}
+
+function showInfo(message) {
+    errorMessage.classList.add('info');
     errorText.textContent = message;
     errorMessage.classList.remove('hidden');
 }
 
 function hideError() {
     errorMessage.classList.add('hidden');
+    errorMessage.classList.remove('info');
 }
 
 // Utility Functions
