@@ -237,12 +237,16 @@ h1 {
     color: #333;
 }
 
-.copy-btn {
+.results-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.copy-btn,
+.save-btn {
     display: flex;
     align-items: center;
     gap: 8px;
-    background: #667eea;
-    color: white;
     border: none;
     padding: 10px 20px;
     border-radius: 8px;
@@ -252,12 +256,28 @@ h1 {
     transition: all 0.2s ease;
 }
 
+.copy-btn {
+    background: #667eea;
+    color: white;
+}
+
 .copy-btn:hover {
     background: #5568d3;
     transform: translateY(-1px);
 }
 
-.copy-btn svg {
+.save-btn {
+    background: #27ae60;
+    color: white;
+}
+
+.save-btn:hover {
+    background: #219a52;
+    transform: translateY(-1px);
+}
+
+.copy-btn svg,
+.save-btn svg {
     width: 18px;
     height: 18px;
 }
@@ -445,7 +465,7 @@ h1 {
         gap: 15px;
     }
 
-    .copy-btn {
+    .results-actions {
         align-self: flex-start;
     }
 }

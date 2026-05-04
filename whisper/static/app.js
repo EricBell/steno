@@ -21,6 +21,7 @@ let pendingFile = null;
 let abortController = null;
 let progressInterval = null;
 let estimatedSeconds = 0;
+let currentSourceFile = null;
 
 // DOM Elements
 const dropZone = document.getElementById('dropZone');
@@ -41,6 +42,7 @@ const newUploadBtn = document.getElementById('newUploadBtn');
 const timestampsCheckbox = document.getElementById('timestamps');
 const summarizeCheckbox = document.getElementById('summarize');
 const cancelBtn = document.getElementById('cancelBtn');
+const saveBtn = document.getElementById('saveBtn');
 const progressBarFill = document.getElementById('progressBarFill');
 const progressStats = document.getElementById('progressStats');
 
@@ -106,6 +108,9 @@ copyBtn.addEventListener('click', () => {
         showError('Failed to copy to clipboard: ' + err.message);
     });
 });
+
+// Save to Disk Button
+saveBtn.addEventListener('click', () => saveTranscript());
 
 // New Upload Button
 newUploadBtn.addEventListener('click', () => {
@@ -191,6 +196,40 @@ async function showEstimatePanel(file) {
     estimatePanel.classList.remove('hidden');
 }
 
+// --- Save to Disk ---
+
+async function saveTranscript() {
+    const text = transcriptDiv.textContent;
+    const baseName = currentSourceFile
+        ? currentSourceFile.replace(/\.[^/.]+$/, '') + '.txt'
+        : 'transcript.txt';
+
+    if (window.showSaveFilePicker) {
+        try {
+            const handle = await window.showSaveFilePicker({
+                suggestedName: baseName,
+                startIn: 'downloads',
+                types: [{ description: 'Text file', accept: { 'text/plain': ['.txt'] } }]
+            });
+            const writable = await handle.createWritable();
+            await writable.write(text);
+            await writable.close();
+        } catch (err) {
+            if (err.name !== 'AbortError') {
+                showError('Failed to save file: ' + err.message);
+            }
+        }
+    } else {
+        const blob = new Blob([text], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = baseName;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+}
+
 // --- Transcription ---
 
 function startProgressAnimation(estimatedSecs) {
@@ -218,6 +257,7 @@ function stopProgressAnimation(finalPct) {
 }
 
 async function startTranscription(file) {
+    currentSourceFile = file.name;
     hideError();
     estimatePanel.classList.add('hidden');
     showProgress();
@@ -332,6 +372,7 @@ function resetUI() {
     progressStats.textContent = '';
     cancelBtn.classList.add('hidden');
     pendingFile = null;
+    currentSourceFile = null;
 }
 
 // Error Handling
