@@ -42,7 +42,7 @@ const newUploadBtn = document.getElementById('newUploadBtn');
 const timestampsCheckbox = document.getElementById('timestamps');
 const summarizeCheckbox = document.getElementById('summarize');
 const cancelBtn = document.getElementById('cancelBtn');
-const saveBtn = document.getElementById('saveBtn');
+const shareBtn = document.getElementById('shareBtn');
 const progressBarFill = document.getElementById('progressBarFill');
 const progressStats = document.getElementById('progressStats');
 
@@ -109,8 +109,8 @@ copyBtn.addEventListener('click', () => {
     });
 });
 
-// Save to Disk Button
-saveBtn.addEventListener('click', () => saveTranscript());
+// Share Button
+shareBtn.addEventListener('click', () => shareDialog.showModal());
 
 // New Upload Button
 newUploadBtn.addEventListener('click', () => {
@@ -196,39 +196,143 @@ async function showEstimatePanel(file) {
     estimatePanel.classList.remove('hidden');
 }
 
-// --- Save to Disk ---
+// --- Share System ---
 
-async function saveTranscript() {
-    const text = transcriptDiv.textContent;
-    const baseName = currentSourceFile
-        ? currentSourceFile.replace(/\.[^/.]+$/, '') + '.txt'
-        : 'transcript.txt';
+// Each entry is a connector: { id, label, icon (SVG string), run(text, baseName) }
+// To add a new destination, append an object following this shape.
+const SHARE_DESTINATIONS = [
+    {
+        id: 'file',
+        label: 'File',
+        icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>`,
+        async run(text, baseName) {
+            const values = await showConfigDialog({
+                title: 'Save to File',
+                fields: [{ id: 'filename', label: 'Filename', value: baseName, type: 'text' }],
+                submitLabel: 'Save'
+            });
+            await saveToFile(text, values.filename);
+        }
+    },
+    {
+        id: 'email',
+        label: 'Email',
+        icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>`,
+        async run(text, baseName) {
+            const values = await showConfigDialog({
+                title: 'Send via Email',
+                fields: [{ id: 'email', label: 'Email address', value: 'eric@polymorph.co', type: 'email' }],
+                submitLabel: 'Send'
+            });
+            const subject = encodeURIComponent('Transcript: ' + baseName.replace(/\.txt$/, ''));
+            const body = encodeURIComponent(text);
+            window.location.href = `mailto:${values.email}?subject=${subject}&body=${body}`;
+        }
+    }
+];
 
+// Generic per-connector config prompt. Resolves with { fieldId: value } or rejects on cancel.
+function showConfigDialog({ title, fields, submitLabel }) {
+    return new Promise((resolve, reject) => {
+        const dialog = document.createElement('dialog');
+        dialog.className = 'config-dialog';
+        dialog.innerHTML = `
+            <div class="config-dialog-inner">
+                <h3>${title}</h3>
+                ${fields.map(f => `
+                    <div class="config-field">
+                        <label>${f.label}</label>
+                        <input type="${f.type}" data-field-id="${f.id}" value="${f.value || ''}">
+                    </div>
+                `).join('')}
+                <div class="config-dialog-actions">
+                    <button class="config-cancel-btn">Cancel</button>
+                    <button class="config-submit-btn">${submitLabel}</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(dialog);
+
+        const cleanup = () => dialog.remove();
+
+        dialog.querySelector('.config-cancel-btn').addEventListener('click', () => {
+            cleanup();
+            reject(new DOMException('Cancelled', 'AbortError'));
+        });
+
+        dialog.querySelector('.config-submit-btn').addEventListener('click', () => {
+            const values = {};
+            fields.forEach(f => {
+                values[f.id] = dialog.querySelector(`[data-field-id="${f.id}"]`).value;
+            });
+            cleanup();
+            resolve(values);
+        });
+
+        dialog.addEventListener('click', (e) => {
+            if (e.target === dialog) {
+                cleanup();
+                reject(new DOMException('Cancelled', 'AbortError'));
+            }
+        });
+
+        dialog.showModal();
+        const first = dialog.querySelector('input');
+        if (first) first.focus();
+    });
+}
+
+async function saveToFile(text, filename) {
     if (window.showSaveFilePicker) {
         try {
             const handle = await window.showSaveFilePicker({
-                suggestedName: baseName,
-                startIn: 'downloads',
+                suggestedName: filename,
+                startIn: 'videos',
                 types: [{ description: 'Text file', accept: { 'text/plain': ['.txt'] } }]
             });
             const writable = await handle.createWritable();
             await writable.write(text);
             await writable.close();
         } catch (err) {
-            if (err.name !== 'AbortError') {
-                showError('Failed to save file: ' + err.message);
-            }
+            if (err.name !== 'AbortError') showError('Failed to save file: ' + err.message);
         }
     } else {
         const blob = new Blob([text], { type: 'text/plain' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = baseName;
+        a.download = filename;
         a.click();
         URL.revokeObjectURL(url);
     }
 }
+
+const shareDialog = document.getElementById('shareDialog');
+
+(function buildShareDialog() {
+    const container = document.getElementById('shareDestinations');
+    SHARE_DESTINATIONS.forEach(dest => {
+        const card = document.createElement('button');
+        card.className = 'share-card';
+        card.innerHTML = `${dest.icon}<span class="share-card-label">${dest.label}</span>`;
+        card.addEventListener('click', async () => {
+            shareDialog.close();
+            const text = transcriptDiv.textContent;
+            const baseName = currentSourceFile
+                ? currentSourceFile.replace(/\.[^/.]+$/, '') + '.txt'
+                : 'transcript.txt';
+            try {
+                await dest.run(text, baseName);
+            } catch (err) {
+                if (err.name !== 'AbortError') showError('Share failed: ' + err.message);
+            }
+        });
+        container.appendChild(card);
+    });
+})();
+
+shareDialog.querySelector('.share-dialog-close').addEventListener('click', () => shareDialog.close());
+shareDialog.addEventListener('click', (e) => { if (e.target === shareDialog) shareDialog.close(); });
 
 // --- Transcription ---
 

@@ -243,7 +243,7 @@ h1 {
 }
 
 .copy-btn,
-.save-btn {
+.share-btn {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -266,20 +266,190 @@ h1 {
     transform: translateY(-1px);
 }
 
-.save-btn {
-    background: #27ae60;
+.share-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
 }
 
-.save-btn:hover {
-    background: #219a52;
+.share-btn:hover {
+    opacity: 0.88;
     transform: translateY(-1px);
 }
 
 .copy-btn svg,
-.save-btn svg {
+.share-btn svg {
     width: 18px;
     height: 18px;
+}
+
+/* Share dialog */
+.share-dialog,
+.config-dialog {
+    border: none;
+    border-radius: 14px;
+    padding: 0;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.3);
+    max-width: 440px;
+    width: 90%;
+}
+
+.share-dialog::backdrop,
+.config-dialog::backdrop {
+    background: rgba(0, 0, 0, 0.45);
+}
+
+.share-dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 20px 0;
+}
+
+.share-dialog-header h3 {
+    font-size: 1.1rem;
+    color: #333;
+    font-weight: 600;
+}
+
+.share-dialog-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #aaa;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    border-radius: 6px;
+    transition: color 0.2s;
+}
+
+.share-dialog-close:hover {
+    color: #333;
+}
+
+.share-dialog-close svg {
+    width: 20px;
+    height: 20px;
+}
+
+.share-destinations {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 16px 20px 20px;
+}
+
+.share-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 24px 16px;
+    border: 2px solid #e8edff;
+    border-radius: 10px;
+    cursor: pointer;
+    background: white;
+    transition: all 0.2s ease;
+}
+
+.share-card:hover {
+    border-color: #667eea;
+    background: #f8f9ff;
+    transform: translateY(-2px);
+}
+
+.share-card svg {
+    width: 32px;
+    height: 32px;
+    color: #667eea;
+}
+
+.share-card-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Config dialog (per-connector prompt) */
+.config-dialog-inner {
+    padding: 24px;
+}
+
+.config-dialog-inner h3 {
+    font-size: 1.05rem;
+    color: #333;
+    font-weight: 600;
+    margin-bottom: 18px;
+}
+
+.config-field {
+    margin-bottom: 16px;
+}
+
+.config-field label {
+    display: block;
+    font-size: 0.82rem;
+    color: #666;
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+
+.config-field input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 2px solid #e8edff;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: border-color 0.2s;
+    font-family: inherit;
+}
+
+.config-field input:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.config-dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.config-cancel-btn {
+    background: white;
+    color: #667eea;
+    border: 2px solid #e8edff;
+    padding: 9px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.config-cancel-btn:hover {
+    border-color: #667eea;
+    background: #f8f9ff;
+}
+
+.config-submit-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 9px 22px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.config-submit-btn:hover {
+    opacity: 0.88;
+    transform: translateY(-1px);
 }
 
 .transcript {
