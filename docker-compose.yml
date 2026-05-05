@@ -31,6 +31,8 @@ services:
       - OLLAMA_TIMEOUT=600
     ports:
       - "8000:8000"
+    volumes:
+      - ./whisper/static:/app/static
     networks:
       - app-network
 

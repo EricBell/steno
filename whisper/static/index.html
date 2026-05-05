@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Video Transcription</title>
-    <link rel="stylesheet" href="/static/styles.css?v=0.3.0">
+    <link rel="stylesheet" href="/static/styles.css?v=0.4.0">
 </head>
 <body>
     <div class="container">
@@ -41,6 +41,10 @@
         <div id="estimatePanel" class="estimate-panel hidden">
             <div class="estimate-grid">
                 <div class="estimate-row">
+                    <span class="estimate-label">File</span>
+                    <span id="estimateFile" class="estimate-value estimate-filename">—</span>
+                </div>
+                <div class="estimate-row">
                     <span class="estimate-label">Duration</span>
                     <span id="estimateDuration" class="estimate-value">—</span>
                 </div>
@@ -64,6 +68,7 @@
         <div id="progress" class="progress hidden">
             <div class="spinner"></div>
             <p class="progress-text">Processing your video...</p>
+            <p id="progressFile" class="progress-file"></p>
             <div class="progress-bar-container">
                 <div id="progressBarFill" class="progress-bar-fill"></div>
             </div>
@@ -90,6 +95,7 @@
                     </button>
                 </div>
             </div>
+            <p id="resultsFile" class="results-file"></p>
             <p id="transcriptionTime" class="transcription-time"></p>
             <div id="transcript" class="transcript"></div>
 
@@ -109,7 +115,7 @@
             <p id="errorText"></p>
         </div>
 
-        <p class="version">v0.3.0</p>
+        <p class="version">v0.4.0</p>
     </div>
 
     <!-- Share Dialog -->
@@ -125,6 +131,6 @@
         <div id="shareDestinations" class="share-destinations"></div>
     </dialog>
 
-    <script src="/static/app.js?v=0.3.0"></script>
+    <script src="/static/app.js?v=0.4.0"></script>
 </body>
 </html>

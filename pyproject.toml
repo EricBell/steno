@@ -1,6 +1,6 @@
 [project]
 name = "steno"
-version = "0.3.0"
+version = "0.4.0"
 description = "Web-based video transcription using OpenAI Whisper"
 readme = "README.md"
 requires-python = ">=3.11"

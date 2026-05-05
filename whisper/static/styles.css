@@ -183,6 +183,20 @@ h1 {
     transition: width 0.45s ease-out;
 }
 
+.progress-file {
+    color: #667eea;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-top: 4px;
+}
+
+.results-file {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #667eea;
+    margin-bottom: 6px;
+}
+
 .progress-stats {
     color: #999;
     font-size: 0.85rem;
@@ -564,6 +578,13 @@ h1 {
     font-weight: 600;
     color: #333;
     font-size: 0.9rem;
+}
+
+.estimate-filename {
+    max-width: 60%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .estimate-value.ok {

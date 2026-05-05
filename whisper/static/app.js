@@ -43,6 +43,7 @@ const timestampsCheckbox = document.getElementById('timestamps');
 const summarizeCheckbox = document.getElementById('summarize');
 const cancelBtn = document.getElementById('cancelBtn');
 const shareBtn = document.getElementById('shareBtn');
+const shareDialog = document.getElementById('shareDialog');
 const progressBarFill = document.getElementById('progressBarFill');
 const progressStats = document.getElementById('progressStats');
 
@@ -160,6 +161,7 @@ function getFileDuration(file) {
 }
 
 async function showEstimatePanel(file) {
+    document.getElementById('estimateFile').textContent = file.name;
     const duration = await getFileDuration(file);
 
     if (duration == null) {
@@ -307,8 +309,6 @@ async function saveToFile(text, filename) {
     }
 }
 
-const shareDialog = document.getElementById('shareDialog');
-
 (function buildShareDialog() {
     const container = document.getElementById('shareDestinations');
     SHARE_DESTINATIONS.forEach(dest => {
@@ -362,6 +362,7 @@ function stopProgressAnimation(finalPct) {
 
 async function startTranscription(file) {
     currentSourceFile = file.name;
+    document.getElementById('progressFile').textContent = file.name;
     hideError();
     estimatePanel.classList.add('hidden');
     showProgress();
@@ -426,6 +427,7 @@ function displayResults(result, elapsedMs) {
         document.getElementById('transcriptionTime').textContent = `Transcribed in ${label}`;
     }
 
+    document.getElementById('resultsFile').textContent = currentSourceFile || '';
     transcriptDiv.textContent = result.text;
 
     if (result.summary) {
